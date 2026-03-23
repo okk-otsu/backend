@@ -1,18 +1,44 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"nilchanpub/feature1"
-	"nilchanpub/feature2"
-	"nilchanpub/feature3"
-	"nilchanpub/feature_postgres/simple_connection"
+	simple_connection "nilchanpub/featurepostgres/simpleconnection"
+	simple_sql "nilchanpub/featurepostgres/simplesql"
+	"time"
 )
 
 func main() {
-	feature1.Feature1()
-	feature2.Feature2()
-	feature3.Feature3()
+	ctx := context.Background()
 
-	simple_connection.CheckConnection()
+	conn, err := simple_connection.CreateConnection(ctx)
+	if err != nil {
+		// log.Println("check connection error:", err)
+		panic(err)
+	}
+
+	if err := simple_sql.CreateTable(ctx, conn); err != nil {
+		panic(err)
+	}
+	fmt.Println("Таблица в бд была создана успешно!")
+
+	tasks, err := simple_sql.SelectRows(ctx, conn)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("SelectRows отработал успешно!")
+
+	for _, task := range tasks {
+		if task.ID == 3 {
+			task.Title = "Покормить кошку"
+			task.Description = "купи корм Kitekat"
+			task.Completed = true
+			t := time.Now()
+			task.CompletedAt = &t
+			if err := simple_sql.UpdateTask(ctx, conn, task); err != nil {
+				panic(err)
+			}
+		}
+	}
 	fmt.Println("main end.")
 }
