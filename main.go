@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-
 	ctx := context.Background()
 
 	conn, err := simple_connection.CreateConnection(ctx)
