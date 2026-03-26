@@ -4,6 +4,7 @@ go 1.25.1
 
 require (
 	github.com/jackc/pgx/v5 v5.8.0
+	github.com/joho/godotenv v1.5.1
 	github.com/k0kubun/pp/v3 v3.5.1
 )
 

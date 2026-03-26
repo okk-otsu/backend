@@ -3,12 +3,20 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+
+	"github.com/joho/godotenv"
+
 	simple_connection "nilchanpub/featurepostgres/simpleconnection"
 	simple_sql "nilchanpub/featurepostgres/simplesql"
 	"time"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 	ctx := context.Background()
 
 	conn, err := simple_connection.CreateConnection(ctx)
