@@ -1,52 +1,18 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"log"
-
-	"github.com/joho/godotenv"
-
-	simple_connection "nilchanpub/featurepostgres/simpleconnection"
-	simple_sql "nilchanpub/featurepostgres/simplesql"
-	"time"
+	"nilchanpub/httpserver"
 )
 
 func main() {
-	err := godotenv.Load()
+	fmt.Println("Запуск http сервера!")
+	fmt.Println("Новый вывод!")
+	err := httpserver.StartHTTPServer()
 	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	ctx := context.Background()
-
-	conn, err := simple_connection.CreateConnection(ctx)
-	if err != nil {
-		// log.Println("check connection error:", err)
-		panic(err)
-	}
-
-	if err := simple_sql.CreateTable(ctx, conn); err != nil {
-		panic(err)
-	}
-	fmt.Println("Таблица в бд была создана успешно!")
-
-	tasks, err := simple_sql.SelectRows(ctx, conn)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("SelectRows отработал успешно!")
-
-	for _, task := range tasks {
-		if task.ID == 3 {
-			task.Title = "Покормить кошку"
-			task.Description = "купи корм Kitekat"
-			task.Completed = true
-			t := time.Now()
-			task.CompletedAt = &t
-			if err := simple_sql.UpdateTask(ctx, conn, task); err != nil {
-				panic(err)
-			}
-		}
+		fmt.Println("Ошибка: ", err)
+	} else {
+		fmt.Println("Сервер завершился успешно")
 	}
 	fmt.Println("main end.")
 }
